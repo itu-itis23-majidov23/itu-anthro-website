@@ -79,8 +79,9 @@ export const targetDepartments: LocalizedText[] = [
 export const assets = {
   logo: "/brand/logo.png",
   logoMark: "/brand/logo-mark.svg",
-  favicon: "/brand/favicon.svg",
-  faviconPng: "/brand/favicon-32.png",
+  faviconIco: "/favicon.ico",
+  faviconPng32: "/brand/favicon-32.png",
+  faviconPng16: "/brand/favicon-16.png",
   appleTouchIcon: "/brand/apple-touch-icon.png",
   ogDefault: "/images/og/og-default.png",
   heroTeam: "/images/hero/hero-team.jpg",

@@ -95,8 +95,9 @@ const edge = 100 / (2 * phases.length);
 </div>
 
 <script>
-  const root = document.querySelector<HTMLElement>("[data-rm]");
-  if (root) {
+  function initRoadmap() {
+    const root = document.querySelector<HTMLElement>("[data-rm]");
+    if (!root) return;
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-rm-tab]"));
     const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-rm-panel]"));
     const fill = root.querySelector<HTMLElement>("[data-rm-fill]");
@@ -143,4 +144,5 @@ const edge = 100 / (2 * phases.length);
 
     select(0);
   }
+  document.addEventListener("astro:page-load", initRoadmap);
 </script>

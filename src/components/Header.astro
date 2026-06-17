@@ -3,8 +3,8 @@ import { localizedPath, getDictionary, type Lang, type RouteKey } from "../i18n/
 import Logo from "./Logo.astro";
 import Nav from "./Nav.astro";
 import Button from "./Button.astro";
+import Icon from "./Icon.astro";
 import LanguagePicker from "./LanguagePicker.astro";
-import MobileMenu from "./MobileMenu.astro";
 
 interface Props {
   lang: Lang;
@@ -39,17 +39,28 @@ const joinHref = localizedPath("join", lang);
       <Button href={joinHref} variant="primary" arrow>{dict.ui.joinUs}</Button>
     </div>
 
-    <MobileMenu lang={lang} currentKey={currentKey} />
+    <div class="lg:hidden">
+      <button
+        type="button"
+        id="mobile-menu-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={dict.ui.openMenu}
+        class="text-navy hover:bg-navy/5 inline-flex h-10 w-10 items-center justify-center rounded-lg transition"
+      >
+        <Icon name="menu" size={24} />
+      </button>
+    </div>
   </div>
 </header>
 
 <script>
-  const header = document.getElementById("site-header");
-  if (header) {
-    const onScroll = () => {
-      header.dataset.scrolled = window.scrollY > 8 ? "true" : "false";
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-  }
+  // One persistent scroll listener that re-targets the (swapped) header after
+  // each view-transition navigation.
+  const updateHeader = () => {
+    const header = document.getElementById("site-header");
+    if (header) header.dataset.scrolled = window.scrollY > 8 ? "true" : "false";
+  };
+  window.addEventListener("scroll", updateHeader, { passive: true });
+  document.addEventListener("astro:page-load", updateHeader);
 </script>

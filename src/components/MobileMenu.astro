@@ -4,6 +4,9 @@ import Icon from "./Icon.astro";
 import Button from "./Button.astro";
 import LanguagePicker from "./LanguagePicker.astro";
 
+// The toggle button lives in the Header; this overlay is rendered at body level
+// (NOT inside the header) because the header's backdrop-blur would otherwise
+// become the containing block for this position:fixed panel and clamp it.
 interface Props {
   lang: Lang;
   currentKey: RouteKey | null;
@@ -11,32 +14,19 @@ interface Props {
 const { lang, currentKey } = Astro.props;
 const dict = getDictionary(lang);
 const joinHref = localizedPath("join", lang);
-const supportHref = localizedPath("support", lang);
+const navKeys: RouteKey[] = [...NAV_ORDER, "support"];
 ---
-
-<div class="lg:hidden">
-  <button
-    type="button"
-    id="mobile-menu-toggle"
-    aria-expanded="false"
-    aria-controls="mobile-menu"
-    aria-label={dict.ui.openMenu}
-    class="text-navy hover:bg-navy/5 inline-flex h-10 w-10 items-center justify-center rounded-lg transition"
-  >
-    <Icon name="menu" size={24} />
-  </button>
-</div>
 
 <div
   id="mobile-menu"
   hidden
-  class="fixed inset-0 z-[60] lg:hidden"
+  class="fixed inset-0 z-[100] lg:hidden"
   role="dialog"
   aria-modal="true"
   aria-label={dict.ui.menuLabel}
 >
-  <div id="mobile-menu-backdrop" class="bg-navy/40 absolute inset-0 backdrop-blur-sm"></div>
-  <nav class="absolute top-0 right-0 flex h-full w-[82%] max-w-sm flex-col bg-white shadow-2xl">
+  <div id="mobile-menu-backdrop" class="bg-navy/70 absolute inset-0 backdrop-blur-sm"></div>
+  <nav class="absolute inset-y-0 right-0 flex w-[88%] max-w-sm flex-col bg-white shadow-2xl">
     <div class="border-line flex items-center justify-between border-b px-5 py-4">
       <span class="font-display text-navy text-sm font-semibold">{dict.ui.menuLabel}</span>
       <button
@@ -49,9 +39,9 @@ const supportHref = localizedPath("support", lang);
       </button>
     </div>
 
-    <ul class="flex flex-col gap-1 px-3 py-5">
+    <ul class="flex-1 overflow-y-auto px-3 py-4">
       {
-        NAV_ORDER.map((key) => {
+        navKeys.map((key) => {
           const active = key === currentKey;
           return (
             <li>
@@ -59,28 +49,20 @@ const supportHref = localizedPath("support", lang);
                 href={localizedPath(key, lang)}
                 aria-current={active ? "page" : undefined}
                 class:list={[
-                  "block rounded-lg px-4 py-3 text-base font-medium transition-colors",
-                  active ? "bg-navy/5 text-navy" : "text-ink/80 hover:bg-navy/5 hover:text-navy",
+                  "flex items-center justify-between rounded-xl px-4 py-3 text-base font-semibold transition-colors",
+                  active ? "bg-navy text-white" : "text-ink hover:bg-navy/[0.06] hover:text-navy",
                 ]}
               >
                 {dict.nav[key]}
+                {active && <Icon name="arrow-right" size={16} />}
               </a>
             </li>
           );
         })
       }
-      <li>
-        <a
-          href={supportHref}
-          aria-current={currentKey === "support" ? "page" : undefined}
-          class="text-ink/80 hover:bg-navy/5 hover:text-navy block rounded-lg px-4 py-3 text-base font-medium transition-colors"
-        >
-          {dict.nav.support}
-        </a>
-      </li>
     </ul>
 
-    <div class="border-line mt-auto flex items-center justify-between gap-3 border-t px-5 py-5">
+    <div class="border-line flex items-center justify-between gap-3 border-t bg-white px-5 py-5">
       <Button href={joinHref} variant="primary" arrow>{dict.ui.joinUs}</Button>
       <LanguagePicker lang={lang} routeKey={currentKey ?? "home"} class="text-navy" />
     </div>
@@ -88,32 +70,46 @@ const supportHref = localizedPath("support", lang);
 </div>
 
 <script>
-  const toggle = document.getElementById("mobile-menu-toggle");
-  const menu = document.getElementById("mobile-menu");
-  const closeBtn = document.getElementById("mobile-menu-close");
-  const backdrop = document.getElementById("mobile-menu-backdrop");
+  function setupMobileMenu() {
+    const toggle = document.getElementById("mobile-menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    const closeBtn = document.getElementById("mobile-menu-close");
+    const backdrop = document.getElementById("mobile-menu-backdrop");
+    if (!toggle || !menu) return;
 
-  function openMenu() {
-    if (!menu || !toggle) return;
-    menu.hidden = false;
-    toggle.setAttribute("aria-expanded", "true");
-    document.documentElement.style.overflow = "hidden";
-    const firstLink = menu.querySelector<HTMLAnchorElement>("a, button");
-    firstLink?.focus();
+    const open = () => {
+      menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+      document.documentElement.style.overflow = "hidden";
+      menu.querySelector<HTMLElement>("a, button")?.focus();
+    };
+    const close = () => {
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+      document.documentElement.style.overflow = "";
+    };
+
+    toggle.addEventListener("click", open);
+    closeBtn?.addEventListener("click", close);
+    backdrop?.addEventListener("click", close);
+    // Close when a link is tapped so the menu doesn't linger during navigation.
+    menu.querySelectorAll("a[href]").forEach((a) => a.addEventListener("click", close));
   }
 
-  function closeMenu() {
-    if (!menu || !toggle) return;
-    menu.hidden = true;
-    toggle.setAttribute("aria-expanded", "false");
-    document.documentElement.style.overflow = "";
-    toggle.focus();
-  }
+  document.addEventListener("astro:page-load", setupMobileMenu);
 
-  toggle?.addEventListener("click", openMenu);
-  closeBtn?.addEventListener("click", closeMenu);
-  backdrop?.addEventListener("click", closeMenu);
+  // Esc closes the menu; also release the scroll lock after every navigation
+  // (the <html> element persists across view-transition swaps).
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && menu && !menu.hidden) closeMenu();
+    if (e.key !== "Escape") return;
+    const menu = document.getElementById("mobile-menu");
+    if (menu && !menu.hidden) {
+      menu.hidden = true;
+      document.getElementById("mobile-menu-toggle")?.setAttribute("aria-expanded", "false");
+      document.documentElement.style.overflow = "";
+    }
+  });
+  document.addEventListener("astro:after-swap", () => {
+    document.documentElement.style.overflow = "";
   });
 </script>
