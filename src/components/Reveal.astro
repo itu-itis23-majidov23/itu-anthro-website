@@ -1,0 +1,18 @@
+---
+// Scroll-reveal wrapper. The single IntersectionObserver in BaseLayout toggles
+// `.is-visible`. `delay` staggers siblings; `y` sets the travel distance.
+interface Props {
+  as?: keyof HTMLElementTagNameMap;
+  delay?: number;
+  y?: number;
+  class?: string;
+}
+const { as: Tag = "div", delay = 0, y, class: className = "" }: Props = Astro.props;
+const style = [delay ? `--reveal-delay:${delay}ms` : "", y !== undefined ? `--reveal-y:${y}px` : ""]
+  .filter(Boolean)
+  .join(";");
+---
+
+<Tag class={`reveal ${className}`} style={style || undefined}>
+  <slot />
+</Tag>

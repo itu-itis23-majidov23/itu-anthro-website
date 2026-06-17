@@ -1,0 +1,35 @@
+---
+import { NAV_ORDER, localizedPath, getDictionary, type Lang, type RouteKey } from "../i18n/utils";
+
+interface Props {
+  lang: Lang;
+  currentKey: RouteKey | null;
+}
+const { lang, currentKey } = Astro.props;
+const dict = getDictionary(lang);
+---
+
+<ul class="flex items-center gap-1">
+  {
+    NAV_ORDER.map((key) => {
+      const active = key === currentKey;
+      return (
+        <li>
+          <a
+            href={localizedPath(key, lang)}
+            aria-current={active ? "page" : undefined}
+            class:list={[
+              "relative rounded-md px-3 py-2 text-sm font-medium transition-colors",
+              "after:bg-accent after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:rounded-full after:transition-transform after:duration-200",
+              active
+                ? "text-navy after:scale-x-100"
+                : "text-ink/70 hover:text-navy after:scale-x-0 hover:after:scale-x-100",
+            ]}
+          >
+            {dict.nav[key]}
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>

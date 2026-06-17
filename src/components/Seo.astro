@@ -1,0 +1,44 @@
+---
+import { type Lang, type RouteKey, routes, absoluteUrl, LANGS } from "../i18n/utils";
+import { site, assets } from "../data/site";
+
+interface Props {
+  lang: Lang;
+  routeKey: RouteKey;
+  title: string;
+  description: string;
+  ogImage?: string;
+}
+const { lang, routeKey, title, description, ogImage } = Astro.props;
+
+const origin = Astro.site?.toString() ?? "https://itu-itis23-majidov23.github.io";
+const canonical = absoluteUrl(routes[routeKey][lang], origin);
+const ogUrl = absoluteUrl(ogImage ?? assets.ogDefault, origin);
+const ogLocale = lang === "tr" ? "tr_TR" : "en_US";
+
+const alternates = LANGS.map((l) => ({
+  hreflang: l === "tr" ? "tr" : "en",
+  href: absoluteUrl(routes[routeKey][l], origin),
+}));
+const xDefault = absoluteUrl(routes[routeKey].tr, origin);
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+<link rel="alternate" hreflang="x-default" href={xDefault} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogUrl} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogUrl} />

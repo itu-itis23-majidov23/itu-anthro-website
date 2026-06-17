@@ -1,0 +1,63 @@
+---
+import { type Lang, getDictionary, localizedPath } from "../../i18n/utils";
+import { roadmap } from "../../data/roadmap";
+import PageLayout from "../../layouts/PageLayout.astro";
+import Section from "../Section.astro";
+import RoadmapTimeline from "../RoadmapTimeline.astro";
+import Icon from "../Icon.astro";
+import CTA from "../CTA.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const r = dict.roadmap;
+const joinHref = localizedPath("join", lang);
+const supportHref = localizedPath("support", lang);
+
+const phases = roadmap.map((p) => ({
+  term: p.term[lang],
+  title: p.title[lang],
+  points: p.points.map((pt) => pt[lang]),
+}));
+---
+
+<PageLayout
+  lang={lang}
+  routeKey="roadmap"
+  metaTitle={r.meta.title}
+  metaDescription={r.meta.description}
+  eyebrow={r.eyebrow}
+  title={r.title}
+  lead={r.lead}
+>
+  <Section size="narrow">
+    <RoadmapTimeline phases={phases} />
+
+    <div class="bg-navy-grad mt-12 rounded-2xl p-8 text-white sm:p-10">
+      <div class="flex items-start gap-4">
+        <div
+          class="text-accent inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10"
+        >
+          <Icon name="trophy" size={22} />
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            {r.sustainabilityTitle}
+          </h2>
+          <p class="mt-3 leading-relaxed text-white/80">{r.sustainabilityBody}</p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <CTA
+    title={dict.home.joinBand.heading}
+    body={dict.home.joinBand.body}
+    primaryHref={joinHref}
+    primaryLabel={dict.ui.joinUs}
+    secondaryHref={supportHref}
+    secondaryLabel={dict.nav.support}
+  />
+</PageLayout>

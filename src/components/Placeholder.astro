@@ -1,0 +1,22 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  label?: string;
+  ratio?: string;
+  icon?: string;
+  class?: string;
+}
+const { label, ratio = "16 / 9", icon = "humanoid", class: className = "" } = Astro.props;
+---
+
+<div
+  class={`tech-dots relative flex items-center justify-center overflow-hidden rounded-2xl border border-line bg-bg-soft ${className}`}
+  style={`aspect-ratio:${ratio}`}
+>
+  <div class="bg-navy-grad pointer-events-none absolute inset-0 opacity-[0.04]"></div>
+  <div class="text-navy/35 flex flex-col items-center gap-2">
+    <Icon name={icon} size={34} strokeWidth={1.4} />
+    {label && <span class="text-xs font-medium tracking-wide">{label}</span>}
+  </div>
+</div>

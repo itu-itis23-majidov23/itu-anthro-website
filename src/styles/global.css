@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * İTÜ AnthRo — design tokens
+ * Palette anchored to İTÜ corporate identity:
+ *   navy  = İTÜ Pantone 295 C (#002855)  — primary
+ *   sky   = İTÜ Pantone 542 C (#7BAFD4)  — secondary
+ *   accent (cyan-teal) used sparingly for motion / active states only.
+ * ------------------------------------------------------------------ */
+@theme {
+  --color-navy: #002855;
+  --color-navy-700: #003a78;
+  --color-navy-600: #084a8f;
+  --color-navy-500: #0a4d92;
+  --color-sky: #7bafd4;
+  --color-sky-soft: #d9e8f4;
+  --color-accent: #2ec5ce;
+
+  --color-ink: #0b1b2b;
+  --color-muted: #5a6b7b;
+  --color-line: #e2e8f0;
+  --color-bg-soft: #f4f7fb;
+
+  --font-sans:
+    "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-display: "Sora Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background-color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-navy-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-sky) 55%, white);
+    color: var(--color-navy);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Reusable utility-ish helpers
+ * ------------------------------------------------------------------ */
+@layer components {
+  /* İTÜ navy → deeper navy gradient for hero / footer surfaces */
+  .bg-navy-grad {
+    background-image: linear-gradient(135deg, #002855 0%, #00336b 55%, #003a78 100%);
+  }
+
+  /* Faint geometric tech grid, layered over navy surfaces */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(123, 175, 212, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(123, 175, 212, 0.08) 1px, transparent 1px);
+    background-size: 44px 44px;
+    background-position: center;
+  }
+
+  /* Hexagon accent dots motif (used as decorative overlay) */
+  .tech-dots {
+    background-image: radial-gradient(rgba(123, 175, 212, 0.18) 1.4px, transparent 1.5px);
+    background-size: 22px 22px;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Scroll-reveal (driven by a single IntersectionObserver in BaseLayout)
+ * ------------------------------------------------------------------ */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 16px));
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ *
+ * Interactive roadmap timeline — active panel entrance
+ * ------------------------------------------------------------------ */
+@keyframes rmIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rm-panel-active {
+  animation: rmIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* List items stagger inside the active panel */
+.rm-panel-active li {
+  animation: rmIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.rm-panel-active li:nth-child(1) {
+  animation-delay: 0.06s;
+}
+.rm-panel-active li:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.rm-panel-active li:nth-child(3) {
+  animation-delay: 0.18s;
+}
+.rm-panel-active li:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+/* Accessibility: honour reduced-motion — show everything, no animation */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

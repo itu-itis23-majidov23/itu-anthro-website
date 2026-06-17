@@ -1,0 +1,49 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  iconName: string;
+  name: string;
+  summary: string;
+  subUnits?: string[];
+  subUnitsLabel?: string;
+  index?: number;
+}
+const { iconName, name, summary, subUnits, subUnitsLabel, index } = Astro.props;
+const num = index !== undefined ? String(index + 1).padStart(2, "0") : null;
+---
+
+<article
+  class="group border-line hover:border-sky flex h-full flex-col rounded-2xl border bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(0,40,85,0.45)]"
+>
+  <div class="flex items-start justify-between gap-4">
+    <div
+      class="bg-navy/[0.06] text-navy group-hover:bg-navy inline-flex h-12 w-12 items-center justify-center rounded-xl transition-colors group-hover:text-white"
+    >
+      <Icon name={iconName} size={24} />
+    </div>
+    {num && <span class="font-display text-line text-sm font-semibold">{num}</span>}
+  </div>
+
+  <h3 class="text-navy mt-5 text-lg font-semibold">{name}</h3>
+  <p class="text-muted mt-2 text-sm leading-relaxed">{summary}</p>
+
+  {
+    subUnits && subUnits.length > 0 && (
+      <div class="border-line mt-5 border-t pt-4">
+        {subUnitsLabel && (
+          <p class="text-muted text-[0.7rem] font-semibold tracking-wider uppercase">
+            {subUnitsLabel}
+          </p>
+        )}
+        <div class="mt-2 flex flex-wrap gap-2">
+          {subUnits.map((unit) => (
+            <span class="bg-sky-soft text-navy-700 rounded-full px-2.5 py-1 text-xs font-medium">
+              {unit}
+            </span>
+          ))}
+        </div>
+      </div>
+    )
+  }
+</article>

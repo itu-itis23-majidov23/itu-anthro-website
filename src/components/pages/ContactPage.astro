@@ -1,0 +1,104 @@
+---
+import { type Lang, getDictionary, localizedPath } from "../../i18n/utils";
+import { site, socials } from "../../data/site";
+import PageLayout from "../../layouts/PageLayout.astro";
+import Section from "../Section.astro";
+import Button from "../Button.astro";
+import Icon from "../Icon.astro";
+import Reveal from "../Reveal.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const c = dict.contact;
+const activeSocials = socials.filter((x) => x.url);
+const joinHref = localizedPath("join", lang);
+---
+
+<PageLayout
+  lang={lang}
+  routeKey="contact"
+  metaTitle={c.meta.title}
+  metaDescription={c.meta.description}
+  eyebrow={c.eyebrow}
+  title={c.title}
+  lead={c.lead}
+>
+  <Section>
+    <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
+      <div class="space-y-5">
+        <a
+          href={`mailto:${site.email}`}
+          class="group border-line hover:border-sky flex items-start gap-4 rounded-2xl border bg-white p-6 transition hover:shadow-sm"
+        >
+          <div
+            class="bg-navy/[0.06] text-navy group-hover:bg-navy inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition group-hover:text-white"
+          >
+            <Icon name="mail" size={22} />
+          </div>
+          <div>
+            <p class="text-navy-500 text-xs font-semibold tracking-wider uppercase">
+              {c.emailLabel}
+            </p>
+            <p class="text-navy mt-1 font-medium">{site.email}</p>
+          </div>
+        </a>
+
+        <div class="border-line flex items-start gap-4 rounded-2xl border bg-white p-6">
+          <div
+            class="bg-navy/[0.06] text-navy inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+          >
+            <Icon name="map-pin" size={22} />
+          </div>
+          <div>
+            <p class="text-navy-500 text-xs font-semibold tracking-wider uppercase">
+              {c.locationLabel}
+            </p>
+            <p class="text-ink/80 mt-1 leading-relaxed">{c.locationValue}</p>
+          </div>
+        </div>
+
+        <div class="border-line rounded-2xl border bg-white p-6">
+          <p class="text-navy-500 text-xs font-semibold tracking-wider uppercase">
+            {c.socialLabel}
+          </p>
+          {
+            activeSocials.length > 0 ? (
+              <div class="mt-3 flex flex-wrap gap-2">
+                {activeSocials.map((soc) => (
+                  <a
+                    href={soc.url!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={soc.label}
+                    class="border-line text-navy hover:bg-navy inline-flex h-10 w-10 items-center justify-center rounded-full border transition hover:text-white"
+                  >
+                    <Icon name={soc.key} size={19} />
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p class="text-muted mt-2 text-sm">{c.socialNote}</p>
+            )
+          }
+        </div>
+      </div>
+
+      <Reveal>
+        <div
+          class="bg-navy-grad flex h-full flex-col justify-center rounded-2xl p-8 text-white sm:p-10"
+        >
+          <h2 class="text-2xl font-semibold text-white sm:text-3xl">
+            {dict.home.joinBand.heading}
+          </h2>
+          <p class="mt-4 leading-relaxed text-white/80">{dict.home.joinBand.body}</p>
+          <div class="mt-7">
+            <Button href={joinHref} variant="white" size="lg" arrow>{dict.ui.joinUs}</Button>
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  </Section>
+</PageLayout>

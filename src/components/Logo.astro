@@ -1,0 +1,20 @@
+---
+import { withBase } from "../i18n/utils";
+import { assets, site } from "../data/site";
+
+// The official İTÜ AnthRo logo (hexagon lockup). The area outside the hexagon
+// is transparent, so it sits cleanly on both the white header and navy footer.
+interface Props {
+  class?: string;
+}
+const { class: className = "h-11" } = Astro.props;
+---
+
+<img
+  src={withBase(assets.logo)}
+  alt={site.name}
+  width="403"
+  height="466"
+  decoding="async"
+  class={`w-auto ${className}`}
+/>

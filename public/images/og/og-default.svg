@@ -1,0 +1,51 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="İTÜ AnthRo — Anthropomorphic Robotics">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#002855" />
+      <stop offset="55%" stop-color="#00336b" />
+      <stop offset="100%" stop-color="#003a78" />
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#7BAFD4" stroke-opacity="0.10" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#grid)" />
+  <circle cx="1050" cy="120" r="240" fill="#7BAFD4" fill-opacity="0.12" />
+
+  <g transform="translate(96 232)">
+    <g transform="translate(0 0)">
+      <path
+        d="M40 0 75.3 20 V60 L40 80 L4.7 60 V20 Z"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="2.4"
+        stroke-linejoin="round"
+      />
+      <g stroke="#7BAFD4" stroke-width="2.2" stroke-linecap="round">
+        <line x1="40" y1="40" x2="40" y2="20" />
+        <line x1="40" y1="40" x2="58" y2="50" />
+        <line x1="40" y1="40" x2="22" y2="50" />
+      </g>
+      <circle cx="40" cy="40" r="6" fill="#2EC5CE" />
+      <circle cx="40" cy="20" r="3.4" fill="#7BAFD4" />
+      <circle cx="58" cy="50" r="3.4" fill="#7BAFD4" />
+      <circle cx="22" cy="50" r="3.4" fill="#7BAFD4" />
+    </g>
+
+    <text x="110" y="36" font-family="'Inter', system-ui, sans-serif" font-size="22" letter-spacing="4" fill="#7BAFD4">
+      İSTANBUL TEKNİK ÜNİVERSİTESİ
+    </text>
+    <text x="108" y="104" font-family="'Sora', 'Inter', system-ui, sans-serif" font-size="86" font-weight="700" fill="#ffffff">
+      İTÜ AnthRo
+    </text>
+  </g>
+
+  <text x="98" y="430" font-family="'Sora', 'Inter', system-ui, sans-serif" font-size="34" font-weight="600" fill="#2EC5CE">
+    Anthropomorphic Robotics
+  </text>
+  <text x="98" y="486" font-family="'Inter', system-ui, sans-serif" font-size="26" fill="#ffffff" fill-opacity="0.78">
+    İnsansı robot teknolojileri üzerine Ar-Ge yürüten İTÜ öğrenci takımı
+  </text>
+</svg>

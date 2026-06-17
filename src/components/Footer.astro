@@ -1,0 +1,121 @@
+---
+import { localizedPath, getDictionary, type Lang, type RouteKey } from "../i18n/utils";
+import { site, socials } from "../data/site";
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+
+const exploreKeys: RouteKey[] = [
+  "about",
+  "teams",
+  "projects",
+  "focus",
+  "roadmap",
+  "join",
+  "support",
+];
+
+const activeSocials = socials.filter((s) => s.url);
+const year = new Date().getFullYear();
+const homeHref = localizedPath("home", lang);
+---
+
+<footer class="bg-navy-grad relative overflow-hidden text-white/75">
+  <div class="tech-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <div class="grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <a href={homeHref} class="inline-flex text-white" aria-label={dict.brand.name}>
+          <Logo class="h-14" />
+        </a>
+        <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/65">
+          {dict.brand.tagline}
+        </p>
+        <p class="mt-5 text-sm font-medium text-white/85">{dict.footer.affiliation}</p>
+        <p class="text-sm text-white/60">{dict.footer.faculty}</p>
+        <p class="text-sm text-white/60">{dict.footer.campus}</p>
+      </div>
+
+      <div class="md:col-span-3">
+        <h2 class="text-xs font-semibold tracking-[0.14em] text-white/50 uppercase">
+          {dict.footer.exploreLabel}
+        </h2>
+        <ul class="mt-4 space-y-2.5">
+          {
+            exploreKeys.map((key) => (
+              <li>
+                <a
+                  href={localizedPath(key, lang)}
+                  class="text-sm text-white/70 transition-colors hover:text-white"
+                >
+                  {dict.nav[key]}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="md:col-span-4">
+        <h2 class="text-xs font-semibold tracking-[0.14em] text-white/50 uppercase">
+          {dict.footer.contactLabel}
+        </h2>
+        <ul class="mt-4 space-y-3">
+          <li>
+            <a
+              href={`mailto:${site.email}`}
+              class="inline-flex items-center gap-2.5 text-sm text-white/80 transition-colors hover:text-white"
+            >
+              <Icon name="mail" size={17} class="text-accent shrink-0" />
+              {site.email}
+            </a>
+          </li>
+          <li class="flex items-start gap-2.5 text-sm text-white/70">
+            <Icon name="map-pin" size={17} class="text-accent mt-0.5 shrink-0" />
+            <span>{dict.contact.locationValue}</span>
+          </li>
+        </ul>
+
+        {
+          activeSocials.length > 0 ? (
+            <div class="mt-5 flex items-center gap-2">
+              {activeSocials.map((s) => (
+                <a
+                  href={s.url!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/80 ring-1 ring-white/20 transition hover:bg-white/10 hover:text-white"
+                >
+                  <Icon name={s.key} size={18} />
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p class="mt-5 text-xs text-white/45">{dict.contact.socialNote}</p>
+          )
+        }
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-3 border-t border-white/12 pt-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {year} {dict.footer.madeNote}. {dict.footer.rights}</p>
+      <a
+        href={site.teamsPortalUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 transition-colors hover:text-white/80"
+      >
+        {dict.footer.affiliation}
+        <Icon name="external" size={13} />
+      </a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,145 @@
+---
+import { getDictionary, localizedPath, type Lang } from "../i18n/utils";
+import Container from "./Container.astro";
+import Button from "./Button.astro";
+import StatBadge from "./StatBadge.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const h = dict.home.hero;
+const joinHref = localizedPath("join", lang);
+const aboutHref = localizedPath("about", lang);
+---
+
+<section class="bg-navy-grad relative overflow-hidden text-white">
+  <div class="tech-grid absolute inset-0 opacity-70" aria-hidden="true"></div>
+  <div
+    class="bg-sky/20 absolute -top-32 -right-24 h-96 w-96 rounded-full blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="bg-accent/10 absolute -bottom-40 -left-24 h-96 w-96 rounded-full blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <Container class="relative">
+    <div class="grid items-center gap-12 py-20 lg:grid-cols-12 lg:py-28">
+      <div class="lg:col-span-7">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-xs font-medium text-white/80"
+        >
+          <span class="relative flex h-2 w-2">
+            <span
+              class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+            ></span>
+            <span class="bg-accent relative inline-flex h-2 w-2 rounded-full"></span>
+          </span>
+          {h.badge}
+        </span>
+
+        <p class="mt-6 text-sm font-medium tracking-wide text-white/70">{h.eyebrow}</p>
+        <h1 class="mt-2 text-5xl font-bold text-white sm:text-6xl lg:text-7xl">
+          {h.title}
+        </h1>
+        <p class="font-display text-accent mt-2 text-xl font-semibold tracking-wide sm:text-2xl">
+          {h.titleAccent}
+        </p>
+
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/80">
+          {h.subtitle}
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          <Button href={joinHref} variant="white" size="lg" arrow>{dict.ui.joinUs}</Button>
+          <Button href={aboutHref} variant="ghost" size="lg">{dict.nav.about}</Button>
+        </div>
+      </div>
+
+      <div class="hidden lg:col-span-5 lg:block">
+        <div class="relative mx-auto max-w-sm">
+          <svg
+            viewBox="0 0 360 460"
+            fill="none"
+            class="h-auto w-full"
+            role="img"
+            aria-label="İTÜ AnthRo"
+          >
+            {/* ambient hexagons */}
+            <g stroke="#7BAFD4" fill="none" opacity="0.16" stroke-width="1.2">
+              <polygon points="180,68 314,148 314,312 180,392 46,312 46,148"></polygon>
+              <polygon points="180,120 270,172 270,288 180,340 90,288 90,172"></polygon>
+            </g>
+            {/* ground */}
+            <ellipse
+              cx="180"
+              cy="418"
+              rx="88"
+              ry="9"
+              stroke="#7BAFD4"
+              stroke-width="1.2"
+              opacity="0.3"></ellipse>
+
+            {/* humanoid — line art */}
+            <g
+              stroke="#9cc4e3"
+              stroke-width="2.2"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              fill="none"
+            >
+              <line x1="180" y1="46" x2="180" y2="30"></line>
+              <rect x="146" y="46" width="68" height="58" rx="22"></rect>
+              <circle cx="145" cy="76" r="4"></circle>
+              <circle cx="215" cy="76" r="4"></circle>
+              <rect x="157" y="64" width="46" height="20" rx="10" stroke="#2EC5CE"></rect>
+              <path d="M170 104 V116 M190 104 V116"></path>
+              <rect x="144" y="130" width="72" height="96" rx="16"></rect>
+              <line x1="180" y1="130" x2="180" y2="226"></line>
+              <circle cx="180" cy="176" r="11"></circle>
+              <line x1="140" y1="146" x2="122" y2="150"></line>
+              <rect x="112" y="146" width="20" height="60" rx="10"></rect>
+              <rect x="114" y="208" width="16" height="56" rx="8"></rect>
+              <rect x="110" y="262" width="24" height="22" rx="8"></rect>
+              <line x1="220" y1="146" x2="238" y2="150"></line>
+              <rect x="228" y="146" width="20" height="60" rx="10"></rect>
+              <rect x="230" y="208" width="16" height="56" rx="8"></rect>
+              <rect x="226" y="262" width="24" height="22" rx="8"></rect>
+              <rect x="150" y="226" width="60" height="28" rx="10"></rect>
+              <rect x="152" y="254" width="22" height="70" rx="11"></rect>
+              <rect x="154" y="326" width="18" height="66" rx="9"></rect>
+              <rect x="142" y="392" width="34" height="14" rx="5"></rect>
+              <rect x="186" y="254" width="22" height="70" rx="11"></rect>
+              <rect x="188" y="326" width="18" height="66" rx="9"></rect>
+              <rect x="184" y="392" width="34" height="14" rx="5"></rect>
+            </g>
+
+            {/* joints + glowing accents */}
+            <g fill="#2EC5CE">
+              <circle cx="180" cy="27" r="3.6"></circle>
+              <circle cx="169" cy="74" r="3.2"></circle>
+              <circle cx="191" cy="74" r="3.2"></circle>
+              <circle cx="180" cy="176" r="4.4"></circle>
+              <circle cx="138" cy="146" r="4.5"></circle>
+              <circle cx="222" cy="146" r="4.5"></circle>
+              <circle cx="121" cy="207" r="3.6"></circle>
+              <circle cx="239" cy="207" r="3.6"></circle>
+              <circle cx="164" cy="253" r="3.6"></circle>
+              <circle cx="196" cy="253" r="3.6"></circle>
+              <circle cx="163" cy="325" r="3.6"></circle>
+              <circle cx="197" cy="325" r="3.6"></circle>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 pb-16 sm:grid-cols-4 lg:pb-20">
+      {dict.home.stats.map((s) => <StatBadge value={s.value} label={s.label} invert />)}
+    </div>
+  </Container>
+</section>

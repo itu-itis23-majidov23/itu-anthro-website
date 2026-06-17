@@ -1,0 +1,27 @@
+---
+import { type Lang, type RouteKey, otherLang, switchLangPath } from "../i18n/utils";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Lang;
+  routeKey: RouteKey;
+  class?: string;
+}
+const { lang, routeKey, class: className = "" } = Astro.props;
+
+const other = otherLang(lang);
+const target = switchLangPath(routeKey, lang);
+const label: Record<Lang, string> = { tr: "TR", en: "EN" };
+const aria = lang === "tr" ? "Switch to English" : "Türkçeye geç";
+---
+
+<a
+  href={target}
+  hreflang={other}
+  lang={other}
+  aria-label={aria}
+  class={`inline-flex items-center gap-1.5 rounded-full border border-current/25 px-2.5 py-1 text-xs font-semibold tracking-wide transition hover:border-current/60 ${className}`}
+>
+  <Icon name="globe" size={15} strokeWidth={1.8} />
+  {label[other]}
+</a>

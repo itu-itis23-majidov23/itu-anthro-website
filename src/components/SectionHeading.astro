@@ -1,0 +1,33 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  align?: "left" | "center";
+  invert?: boolean;
+  class?: string;
+}
+const {
+  eyebrow,
+  title,
+  description,
+  align = "left",
+  invert = false,
+  class: className = "",
+} = Astro.props;
+
+const wrap = align === "center" ? "mx-auto text-center" : "";
+const eyebrowColor = invert ? "text-accent" : "text-navy-500";
+const titleColor = invert ? "text-white" : "text-navy";
+const descColor = invert ? "text-white/70" : "text-muted";
+---
+
+<div class={`max-w-2xl ${wrap} ${className}`}>
+  {
+    eyebrow && (
+      <p class={`text-xs font-semibold tracking-[0.16em] uppercase ${eyebrowColor}`}>{eyebrow}</p>
+    )
+  }
+  <h2 class={`mt-3 text-3xl sm:text-4xl ${titleColor}`}>{title}</h2>
+  {description && <p class={`mt-4 text-lg leading-relaxed ${descColor}`}>{description}</p>}
+</div>

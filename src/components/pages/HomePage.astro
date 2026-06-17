@@ -1,0 +1,103 @@
+---
+import { type Lang, getDictionary, localizedPath } from "../../i18n/utils";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../Section.astro";
+import SectionHeading from "../SectionHeading.astro";
+import Hero from "../Hero.astro";
+import Icon from "../Icon.astro";
+import Reveal from "../Reveal.astro";
+import CTA from "../CTA.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+
+const joinHref = localizedPath("join", lang);
+const contactHref = localizedPath("contact", lang);
+
+// Compact wayfinding cards — full content lives on the dedicated pages.
+const exploreCards = [
+  {
+    icon: "humanoid",
+    title: dict.nav.about,
+    desc: dict.home.explore.about,
+    href: localizedPath("about", lang),
+  },
+  {
+    icon: "business",
+    title: dict.nav.teams,
+    desc: dict.home.teams.subheading,
+    href: localizedPath("teams", lang),
+  },
+  {
+    icon: "cpu",
+    title: dict.nav.projects,
+    desc: dict.home.projects.subheading,
+    href: localizedPath("projects", lang),
+  },
+  {
+    icon: "trophy",
+    title: dict.nav.roadmap,
+    desc: dict.home.roadmap.subheading,
+    href: localizedPath("roadmap", lang),
+  },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  routeKey="home"
+  title={dict.home.meta.title}
+  description={dict.home.meta.description}
+>
+  <Hero lang={lang} />
+
+  {/* Mission + wayfinding */}
+  <Section>
+    <SectionHeading
+      align="center"
+      class="mx-auto"
+      eyebrow={dict.brand.full}
+      title={dict.home.mission.heading}
+      description={dict.home.mission.body}
+    />
+
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        exploreCards.map((card, i) => (
+          <Reveal delay={i * 70} class="h-full">
+            <a
+              href={card.href}
+              class="group border-line hover:border-sky flex h-full flex-col rounded-2xl border bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(0,40,85,0.45)]"
+            >
+              <div class="bg-navy/[0.06] text-navy group-hover:bg-navy inline-flex h-12 w-12 items-center justify-center rounded-xl transition-colors group-hover:text-white">
+                <Icon name={card.icon} size={24} />
+              </div>
+              <h3 class="text-navy mt-5 flex items-center justify-between text-lg font-semibold">
+                {card.title}
+                <Icon
+                  name="arrow-right"
+                  size={18}
+                  class="text-navy-500 transition-transform group-hover:translate-x-0.5"
+                />
+              </h3>
+              <p class="text-muted mt-2 text-sm leading-relaxed">{card.desc}</p>
+            </a>
+          </Reveal>
+        ))
+      }
+    </div>
+  </Section>
+
+  {/* Join CTA */}
+  <CTA
+    title={dict.home.joinBand.heading}
+    body={dict.home.joinBand.body}
+    primaryHref={joinHref}
+    primaryLabel={dict.ui.joinUs}
+    secondaryHref={contactHref}
+    secondaryLabel={dict.ui.contactUs}
+  />
+</BaseLayout>

@@ -1,0 +1,146 @@
+---
+import Icon from "./Icon.astro";
+
+interface Phase {
+  term: string;
+  title: string;
+  points: string[];
+}
+interface Props {
+  phases: Phase[];
+}
+const { phases } = Astro.props;
+
+// Inset so the connector line spans from the first node center to the last.
+const edge = 100 / (2 * phases.length);
+---
+
+<div data-rm class="mx-auto max-w-3xl">
+  {/* Stepper / tablist */}
+  <div
+    role="tablist"
+    aria-label="Roadmap phases"
+    class="relative grid"
+    style={`grid-template-columns: repeat(${phases.length}, minmax(0, 1fr))`}
+  >
+    {/* connector track + progress fill */}
+    <div
+      class="bg-line absolute top-[22px] h-0.5 rounded"
+      style={`left:${edge}%;right:${edge}%`}
+      aria-hidden="true"
+    >
+      <div
+        data-rm-fill
+        class="bg-accent h-full rounded transition-[width] duration-500 ease-out"
+        style="width:0%"
+      >
+      </div>
+    </div>
+
+    {
+      phases.map((phase, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`rm-tab-${i}`}
+          data-rm-tab
+          aria-controls={`rm-panel-${i}`}
+          aria-selected={i === 0 ? "true" : "false"}
+          tabindex={i === 0 ? 0 : -1}
+          class="group relative flex cursor-pointer flex-col items-center bg-transparent focus:outline-none"
+        >
+          <span class="border-line font-display text-muted group-hover:border-navy/50 group-focus-visible:ring-navy/20 group-aria-[selected=true]:border-navy group-aria-[selected=true]:bg-navy group-aria-[selected=true]:ring-accent/30 z-10 flex h-11 w-11 items-center justify-center rounded-full border-2 bg-white text-sm font-bold transition-all duration-300 group-focus-visible:ring-4 group-aria-[selected=true]:scale-110 group-aria-[selected=true]:text-white group-aria-[selected=true]:ring-4">
+            {i + 1}
+          </span>
+          <span class="text-muted group-hover:text-navy group-aria-[selected=true]:text-navy mt-3 text-xs font-semibold tracking-wide uppercase transition-colors sm:text-sm">
+            {phase.term}
+          </span>
+        </button>
+      ))
+    }
+  </div>
+
+  {/* Panels */}
+  <div class="mt-10">
+    {
+      phases.map((phase, i) => (
+        <div
+          role="tabpanel"
+          id={`rm-panel-${i}`}
+          aria-labelledby={`rm-tab-${i}`}
+          data-rm-panel
+          tabindex="0"
+          class:list={[
+            "border-line relative overflow-hidden rounded-2xl border bg-white p-6 focus:outline-none sm:p-8",
+            i === 0 ? "rm-panel-active" : "hidden",
+          ]}
+        >
+          <span class="bg-accent absolute inset-y-0 left-0 w-1" aria-hidden="true" />
+          <span class="bg-navy/[0.06] text-navy inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide">
+            {phase.term}
+          </span>
+          <h3 class="text-navy mt-3 text-xl font-semibold sm:text-2xl">{phase.title}</h3>
+          <ul class="mt-5 space-y-3">
+            {phase.points.map((point) => (
+              <li class="text-ink/80 flex items-start gap-3 text-sm leading-relaxed sm:text-base">
+                <Icon name="check" size={18} class="text-accent mt-0.5 shrink-0" strokeWidth={2} />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-rm]");
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-rm-tab]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-rm-panel]"));
+    const fill = root.querySelector<HTMLElement>("[data-rm-fill]");
+    const n = tabs.length;
+
+    function select(idx: number, focus = false) {
+      tabs.forEach((tab, i) => {
+        const on = i === idx;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focus) tab.focus();
+      });
+      panels.forEach((panel, i) => {
+        const on = i === idx;
+        panel.classList.toggle("hidden", !on);
+        if (on) {
+          // restart the entrance animation
+          panel.classList.remove("rm-panel-active");
+          void panel.offsetWidth;
+          panel.classList.add("rm-panel-active");
+        }
+      });
+      if (fill) fill.style.width = n > 1 ? `${(idx / (n - 1)) * 100}%` : "0%";
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(i));
+      tab.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          select((i + 1) % n, true);
+        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          select((i - 1 + n) % n, true);
+        } else if (e.key === "Home") {
+          e.preventDefault();
+          select(0, true);
+        } else if (e.key === "End") {
+          e.preventDefault();
+          select(n - 1, true);
+        }
+      });
+    });
+
+    select(0);
+  }
+</script>

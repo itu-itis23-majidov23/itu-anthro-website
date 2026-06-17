@@ -1,0 +1,97 @@
+---
+import { type Lang, getDictionary } from "../../i18n/utils";
+import { site, targetFaculties, targetDepartments } from "../../data/site";
+import PageLayout from "../../layouts/PageLayout.astro";
+import Section from "../Section.astro";
+import SectionHeading from "../SectionHeading.astro";
+import Button from "../Button.astro";
+import Icon from "../Icon.astro";
+import Reveal from "../Reveal.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const j = dict.join;
+
+const subject = lang === "tr" ? "İTÜ AnthRo - Başvuru" : "İTÜ AnthRo - Application";
+const mailto = `mailto:${site.email}?subject=${encodeURIComponent(subject)}`;
+const applyHref = site.joinFormUrl ?? mailto;
+const hasForm = Boolean(site.joinFormUrl);
+
+const chips = [...targetFaculties.map((x) => x[lang]), ...targetDepartments.map((x) => x[lang])];
+---
+
+<PageLayout
+  lang={lang}
+  routeKey="join"
+  metaTitle={j.meta.title}
+  metaDescription={j.meta.description}
+  eyebrow={j.eyebrow}
+  title={j.title}
+  lead={j.lead}
+>
+  {/* Who we're looking for + target departments */}
+  <Section>
+    <div class="grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <SectionHeading title={j.lookingForTitle} />
+        <p class="text-ink/80 mt-5 text-lg leading-relaxed">{j.lookingForBody}</p>
+      </div>
+      <Reveal>
+        <div class="border-line bg-bg-soft rounded-2xl border p-6 sm:p-8">
+          <p class="text-navy-500 text-xs font-semibold tracking-[0.14em] uppercase">
+            {j.departmentsLabel}
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {
+              chips.map((chip) => (
+                <span class="border-line text-navy-700 rounded-full border bg-white px-3 py-1.5 text-sm font-medium">
+                  {chip}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  </Section>
+
+  {/* What you'll do */}
+  <Section soft size="narrow">
+    <SectionHeading title={j.whatYouDoTitle} description={j.whatYouDoBody} />
+  </Section>
+
+  {/* How to apply */}
+  <Section>
+    <div class="bg-navy-grad relative overflow-hidden rounded-2xl p-8 text-white sm:p-12">
+      <div class="tech-dots absolute inset-0 opacity-40" aria-hidden="true"></div>
+      <div class="relative max-w-2xl">
+        <h2 class="text-2xl font-semibold text-white sm:text-3xl">{j.howToApplyTitle}</h2>
+        <p class="mt-4 text-lg leading-relaxed text-white/80">{j.howToApplyBody}</p>
+        <div class="mt-7 flex flex-wrap items-center gap-4">
+          <Button href={applyHref} variant="white" size="lg" arrow external={hasForm}>
+            {hasForm ? j.applyFormButton : j.applyButton}
+          </Button>
+          {
+            hasForm ? (
+              <a
+                href={mailto}
+                class="inline-flex items-center gap-2 text-sm text-white/70 underline-offset-4 transition hover:text-white hover:underline"
+              >
+                <Icon name="mail" size={15} />
+                {j.orEmail}
+              </a>
+            ) : (
+              <span class="inline-flex items-center gap-2 text-sm text-white/60">
+                <Icon name="external" size={15} />
+                {j.formComingSoon}
+              </span>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </Section>
+</PageLayout>

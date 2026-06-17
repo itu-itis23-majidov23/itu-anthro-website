@@ -1,0 +1,54 @@
+---
+import { type Lang, getDictionary, localizedPath } from "../../i18n/utils";
+import { focusAreas } from "../../data/focusAreas";
+import PageLayout from "../../layouts/PageLayout.astro";
+import Section from "../Section.astro";
+import FocusAreaCard from "../FocusAreaCard.astro";
+import Reveal from "../Reveal.astro";
+import CTA from "../CTA.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const f = dict.focus;
+const joinHref = localizedPath("join", lang);
+const roadmapHref = localizedPath("roadmap", lang);
+---
+
+<PageLayout
+  lang={lang}
+  routeKey="focus"
+  metaTitle={f.meta.title}
+  metaDescription={f.meta.description}
+  eyebrow={f.eyebrow}
+  title={f.title}
+  lead={f.lead}
+>
+  <Section>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        focusAreas.map((area, i) => (
+          <Reveal delay={i * 60} class="h-full">
+            <FocusAreaCard
+              iconName={area.iconKey}
+              title={area.title[lang]}
+              body={area.body[lang]}
+              tags={area.tags?.map((t) => t[lang])}
+            />
+          </Reveal>
+        ))
+      }
+    </div>
+  </Section>
+
+  <CTA
+    title={dict.home.joinBand.heading}
+    body={dict.home.joinBand.body}
+    primaryHref={joinHref}
+    primaryLabel={dict.ui.joinUs}
+    secondaryHref={roadmapHref}
+    secondaryLabel={dict.ui.viewRoadmap}
+  />
+</PageLayout>

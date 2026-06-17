@@ -1,0 +1,27 @@
+---
+import { type Lang, getDictionary, localizedPath } from "../../i18n/utils";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Button from "../Button.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const nf = dict.notFound;
+const homeHref = localizedPath("home", lang);
+---
+
+<BaseLayout lang={lang} routeKey="home" title={nf.title} description={nf.body}>
+  <meta slot="head" name="robots" content="noindex" />
+  <section class="bg-bg-soft tech-dots grid min-h-[62vh] place-items-center px-4 py-20">
+    <div class="text-center">
+      <p class="font-display text-navy/15 text-7xl font-bold sm:text-8xl">{nf.code}</p>
+      <h1 class="text-navy mt-2 text-3xl sm:text-4xl">{nf.title}</h1>
+      <p class="text-muted mx-auto mt-3 max-w-md">{nf.body}</p>
+      <div class="mt-8 flex justify-center">
+        <Button href={homeHref} variant="primary" size="lg" arrow>{nf.button}</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

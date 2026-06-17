@@ -1,0 +1,16 @@
+---
+interface Props {
+  soft?: boolean;
+  id?: string;
+  class?: string;
+  size?: "default" | "narrow";
+}
+const { soft = false, id, class: className = "", size = "default" } = Astro.props;
+const max = size === "narrow" ? "max-w-4xl" : "max-w-6xl";
+---
+
+<section id={id} class={`${soft ? "bg-bg-soft" : "bg-white"} py-16 sm:py-20 lg:py-24 ${className}`}>
+  <div class={`mx-auto w-full ${max} px-4 sm:px-6`}>
+    <slot />
+  </div>
+</section>

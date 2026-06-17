@@ -1,0 +1,56 @@
+---
+import { type Lang, getDictionary, localizedPath } from "../../i18n/utils";
+import { teams } from "../../data/teams";
+import PageLayout from "../../layouts/PageLayout.astro";
+import Section from "../Section.astro";
+import TeamCard from "../TeamCard.astro";
+import Reveal from "../Reveal.astro";
+import CTA from "../CTA.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const t = dict.teams;
+const joinHref = localizedPath("join", lang);
+const contactHref = localizedPath("contact", lang);
+---
+
+<PageLayout
+  lang={lang}
+  routeKey="teams"
+  metaTitle={t.meta.title}
+  metaDescription={t.meta.description}
+  eyebrow={t.eyebrow}
+  title={t.title}
+  lead={t.lead}
+>
+  <Section>
+    <div class="grid gap-5 sm:grid-cols-2">
+      {
+        teams.map((team, i) => (
+          <Reveal delay={i * 60} class="h-full">
+            <TeamCard
+              iconName={team.iconKey}
+              name={team.name[lang]}
+              summary={team.summary[lang]}
+              subUnits={team.subUnits?.map((u) => u[lang])}
+              subUnitsLabel={t.subUnitsLabel}
+              index={i}
+            />
+          </Reveal>
+        ))
+      }
+    </div>
+  </Section>
+
+  <CTA
+    title={dict.home.joinBand.heading}
+    body={dict.home.joinBand.body}
+    primaryHref={joinHref}
+    primaryLabel={dict.ui.joinUs}
+    secondaryHref={contactHref}
+    secondaryLabel={dict.ui.contactUs}
+  />
+</PageLayout>

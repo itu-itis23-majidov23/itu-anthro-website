@@ -1,0 +1,89 @@
+---
+import { type Lang, getDictionary, localizedPath } from "../../i18n/utils";
+import { people } from "../../data/site";
+import PageLayout from "../../layouts/PageLayout.astro";
+import Section from "../Section.astro";
+import SectionHeading from "../SectionHeading.astro";
+import Reveal from "../Reveal.astro";
+import Placeholder from "../Placeholder.astro";
+import PersonCard from "../PersonCard.astro";
+import CTA from "../CTA.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const a = dict.about;
+const joinHref = localizedPath("join", lang);
+const contactHref = localizedPath("contact", lang);
+---
+
+<PageLayout
+  lang={lang}
+  routeKey="about"
+  metaTitle={a.meta.title}
+  metaDescription={a.meta.description}
+  eyebrow={a.eyebrow}
+  title={a.title}
+  lead={a.lead}
+>
+  {/* Identity */}
+  <Section>
+    <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <SectionHeading eyebrow={dict.nav.about} title={a.identity.heading} />
+        <p class="text-ink/80 mt-5 text-lg leading-relaxed">{a.identity.body}</p>
+      </div>
+      <Reveal>
+        <Placeholder label={dict.ui.imageComingSoon} ratio="4 / 3" icon="humanoid" />
+      </Reveal>
+    </div>
+  </Section>
+
+  {/* Mission + Vision */}
+  <Section soft>
+    <div class="grid gap-6 md:grid-cols-2">
+      <Reveal class="h-full">
+        <div class="border-line h-full rounded-2xl border bg-white p-8">
+          <h2 class="text-navy text-2xl font-semibold">{a.mission.heading}</h2>
+          <p class="text-ink/80 mt-4 leading-relaxed">{a.mission.body}</p>
+        </div>
+      </Reveal>
+      <Reveal delay={80} class="h-full">
+        <div class="bg-navy-grad h-full rounded-2xl p-8 text-white">
+          <h2 class="text-2xl font-semibold text-white">{a.vision.heading}</h2>
+          <p class="mt-4 leading-relaxed text-white/80">{a.vision.body}</p>
+        </div>
+      </Reveal>
+    </div>
+  </Section>
+
+  {/* Why humanoid */}
+  <Section size="narrow">
+    <SectionHeading eyebrow={dict.brand.full} title={a.why.heading} description={a.why.body} />
+  </Section>
+
+  {/* People */}
+  <Section soft>
+    <SectionHeading title={a.peopleHeading} />
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        people.map((p, i) => (
+          <Reveal delay={i * 80}>
+            <PersonCard name={p.name} role={a[p.roleKey]} />
+          </Reveal>
+        ))
+      }
+    </div>
+  </Section>
+
+  <CTA
+    title={dict.home.joinBand.heading}
+    body={dict.home.joinBand.body}
+    primaryHref={joinHref}
+    primaryLabel={dict.ui.joinUs}
+    secondaryHref={contactHref}
+    secondaryLabel={dict.ui.contactUs}
+  />
+</PageLayout>
